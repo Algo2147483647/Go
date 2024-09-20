@@ -26,8 +26,8 @@ namespace Go {
 			if (v == -1) continue;
 
 			if ( s.board[v] == EMPTY ||
-				(s.board[v] == s.player && s.qi[s.mark[v]] != 1) || 	//ÈôÊÇÎÒ£¬Ó¦Ö»Ò»Æø
-				(s.board[v] != s.player && s.qi[s.mark[v]] == 1)) 		//ÈôÊÇµĞ£¬Ó¦±Ø²»Ö»Ò»Æø
+				(s.board[v] == s.player && s.qi[s.mark[v]] != 1) || 	//è‹¥æ˜¯æˆ‘ï¼Œåº”åªä¸€æ°”
+				(s.board[v] != s.player && s.qi[s.mark[v]] == 1)) 		//è‹¥æ˜¯æ•Œï¼Œåº”å¿…ä¸åªä¸€æ°”
 				return false;
 		}
 		return true;
