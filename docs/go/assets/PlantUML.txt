@@ -1,0 +1,83 @@
+@startuml
+actor Player
+participant "updateState" as updateState
+participant "removeBlock" as removeBlock
+participant "mergeBlock" as mergeBlock
+
+==Update State==
+Player -> updateState: Perform Action, Last State
+activate updateState
+
+alt action is PASS
+    updateState -> Player: legal
+else The 落子点非空
+    updateState -> Player: not legal
+else action is suicide:
+    updateState -> Player: not legal
+else 
+    group Update State
+        updateState -> updateState: 落子 z
+        updateState -> updateState: 记录 z 有多少气
+        loop z neighbor's color
+            alt is opponent color of z and have no qi
+                updateState -> removeBlock: Clear the color blocks
+            else equal the color of z
+                updateState -> mergeBlock: Merge the color blocks
+            end
+        end
+    end
+    alt 存在历史全局同形棋面
+        updateState -> Player: not legal
+    end 
+    updateState -> Player: legal
+end 
+deactivate updateState
+@enduml
+
+
+@startuml
+actor Player
+participant "isTermination" as isTermination
+participant "computeReward" as computeReward
+participant "calculateReachColor" as calculateReachColor
+
+==Determine whether to terminate, Win or Lose==
+
+Player -> isTermination: State
+activate isTermination
+alt PASS x 2
+isTermination -> Player: termination
+else
+isTermination -> Player: not termination
+deactivate isTermination
+end
+
+alt termination
+   Player -> computeReward: State
+   activate computeReward
+
+   par board, Color (White, Black)
+      computeReward -> calculateReachColor: Board, Color
+         activate calculateReachColor
+
+      loop Traverse board (BFS)
+         calculateReachColor->calculateReachColor: 从队列中取出一个点
+         alt 检查其相邻的点，若未访问且为空
+         calculateReachColor->calculateReachColor:`reward of Color` + 1
+         calculateReachColor->calculateReachColor:标记为已访问，加入队列
+         end
+      end 
+      
+      calculateReachColor -> computeReward: reward of Color
+         deactivate calculateReachColor
+   end
+
+   alt (black - white - komi) >= 0
+      computeReward -> Player: Black Win
+   else (black - white - komi) < 0
+      computeReward -> Player: White Win
+
+   deactivate computeReward
+   end
+end
+@enduml
