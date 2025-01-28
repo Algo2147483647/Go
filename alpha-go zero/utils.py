@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 def encode_board(board, board_size):
     """
@@ -19,7 +20,7 @@ def encode_board(board, board_size):
     
     return encoded_board
 
-import torch
+
 
 def evaluate_model(model, board_input):
     """
